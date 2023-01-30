@@ -101,17 +101,34 @@ entradaDados.question('Digite seu Nome: \n', function(nome){
 
                         console.log('ERRO: Você não digitou um número válido!!');
 
+                    //validação para entrada de dados somente entre 0 e 10    
+                    }else if( valor1 < 0 || valor2 < 0 || valor3 < 0|| valor4 < 0){
+
+                        console.log('ERRO: nota menor que zero');
+
+                    }else if ( valor1 > 10 || valor2 > 10 || valor3 > 10 || valor4 > 10){
+
+                        console.log('ERRO: nota maior que dez');
+
                     }else{
                         media = (parseFloat(valor1) + parseFloat(valor2) + parseFloat(valor3) + parseFloat(valor4))/4;
 
-                        console.log(media);
-                    
-                    ////exibir os dados para ver se as entradas estão funcionando corretamente
-                    // console.log('Nota 1:' + valor1 + ' Nota 2:' + valor2 + ' Nota 3:' + valor3 + ' Nota 4:' + valor4);
+                        ////exibir os dados para ver se as entradas estão funcionando corretamente
+                        //console.log('Nota 1:' + valor1 + ' Nota 2:' + valor2 + ' Nota 3:' + valor3 + ' Nota 4:' + valor4);
+
+                        //Validação se o aluno aprovou e reprovou
+                        if(media <= 7){
+                            console.log('Você Reprovou!!');
+                        }
+                        if(media >= 7){
+                            console.log('Você está Aprovado!!')
+                        }
+
+                        console.log('Media do aluno: ' + media.toFixed(1));
+
                     }
-
-
                     
+   
 
                 });
             });
