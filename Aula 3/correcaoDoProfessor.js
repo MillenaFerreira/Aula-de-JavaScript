@@ -5,7 +5,9 @@
  * Versão: 1.0
  **************************************************************/
 
-//sempre colocar a extensao se ela foi criada por você
+//sempre colocar a extensao se ela foi criada por você e começar com a raiz, 
+//exatamente igual se faz quando vc quer usar uma imagem no html
+
 //Import da biblioteca da calculadora
 var matematica = require('./modulo/calculadora.js');
 
@@ -38,22 +40,27 @@ entradaDados.question('Valor 1: \n', function(numero1){
 
             //validação de dados vazio
             if(valor1 == '' || valor2 == '' || operacao == ''){
-                console.log('ERRO: Não é possivel calcular se um dado estiver em branco');
+                console.log('ERRO: Não é possivel calcular se um dado estiver em branco.');
             }else if (isNaN(valor1) || isNaN(valor2)){
                 console.log('ERRO: Não é possivel calcular se os dados digitados não forem números.');
             }else{
                 
+                //Chama a função para calcular os valores (funções que nós criamos)
                 resultado = matematica.calculadora(valor1, valor2, operacao);
-                if(resultado != false){
-                    console.log(resultado);
+
+                //if(resultado == false && typeof(resultado) == 'boolean'){
+                if(resultado === false){
+
+                    entradaDados.close();
+
                 }else{
-                    entradaDados.close
+
+                    console.log(resultado);
+
                 }
-                
-                
+                               
 
             }
-
 
 
         });
