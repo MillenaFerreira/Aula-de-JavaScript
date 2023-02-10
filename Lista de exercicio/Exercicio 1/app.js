@@ -1,6 +1,6 @@
 /***************************************************************
- * Objetivo: media de nota de uma universidade
+ * Objetivo: Tabuada
  * Autor: Millena Ferreira
- * Data: 06/02/2023
+ * Data: 10/02/2023
  * Versão: 1.0
  **************************************************************/
