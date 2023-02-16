@@ -17,10 +17,10 @@ const getTabuada = function (numeroInicial, numeroFinal, contadorInicial, contad
 
     if (tabuadaInicial == 0 || tabuadaFinal == 0 || contInicial == 0 || contFinal == 0) {
         status = false;
-        console.log('0');
+        console.log('ERRO: não pode existir um valor 0');
     } else if (isNaN(tabuadaInicial) || isNaN(tabuadaFinal) || isNaN(contInicial) || isNaN(contFinal)) {
         status = false;
-        console.log('String');
+        console.log('ERRO: não se pode colocar letras');
     } else if (tabuadaInicial < 2 || tabuadaInicial > 100 || tabuadaFinal < 2 || tabuadaFinal > 100) {
         status = false;
         console.log('ERRO: tabuada só pode ser entre 2 a 100');
@@ -30,42 +30,16 @@ const getTabuada = function (numeroInicial, numeroFinal, contadorInicial, contad
     }
 
     else {
-
         for (let cont = tabuadaInicial; cont <= tabuadaFinal; cont++) {
-
             console.log('\nTabuada do ' + cont);
-
             for (let contador = contInicial; contador <= contFinal; contador++) {
-
                 resultado = contador * cont;
-
                 console.log(`${cont} x ${contador} = ${resultado}`);
             }
         }
-
-        // for( tabuadaInicial - 1 <= tabuadaFinal; tabuadaInicial++;){
-        //     let minMultiplicadorContador = Number(contInicial)
-        //     for( minMultiplicadorContador <= contFinal; minMultiplicadorContador++;){
-        //         resultado = tabuadaInicial * minMultiplicadorContador
-        //         console.log(tabuadaInicial + 'x' + minMultiplicadorContador + '=' + resultado)
-        //     }
-        // }
-        
-        // let minMultiplicadorContador
-        // while(tabuadaInicial <= tabuadaFinal){
-        //     minMultiplicadorContador = Number(contInicial)
-        //     while(minMultiplicadorContador <= contFinal){
-        //         resultado = tabuadaInicial * minMultiplicadorContador
-        //         console.log(tabuadaInicial + 'x' + minMultiplicadorContador + '=' + resultado)
-        //         minMultiplicadorContador++
-        //     }
-        //     tabuadaInicial++
-        // }
     }
     return status;
 };
-
-getTabuada(4, 7, 7, 12);
 
 module.exports = {
     getTabuada
