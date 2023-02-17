@@ -1,3 +1,10 @@
+/***************************************************************
+ * Objetivo: - Intereção do usuario
+ * Autor: Millena Ferreira
+ * Data: 10/02/2023
+ * Versão: 1.0
+ **************************************************************/
+
 var matematica = require('./modulo/tabuada.js');
 
 var readline = require('readline');

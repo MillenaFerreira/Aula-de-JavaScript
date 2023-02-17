@@ -1,5 +1,5 @@
 /***************************************************************
- * Objetivo: tabuada
+ * Objetivo: - Criar um sistema para gerenciar o cálculo de uma tabuada
  * Autor: Millena Ferreira
  * Data: 06/02/2023
  * Versão: 1.0

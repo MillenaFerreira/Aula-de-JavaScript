@@ -1,5 +1,5 @@
 /***************************************************************
- * Objetivo: tabuada
+ * Objetivo: Interação do usuario com o desenvolvimento Back-End
  * Autor: Millena Ferreira
  * Data: 06/02/2023
  * Versão: 1.0
@@ -28,8 +28,8 @@ entradaDados.question('Digite o número Inicial: \n', function (numeroInicio) {
 
             let resultado = matematica.getImparPar(numeroInicial, numeroFinal, opcao);
 
-        })
-    })
-})
+        });
+    });
+});
 
 
