@@ -8,8 +8,6 @@
 //função que irar gerar a nota e fazer a validação de si propria
 const getCalcularMedia = function (nota1, nota2, nota3, nota4) {
 
-    let media = (Number(nota1) + Number(nota2) + Number(nota3) + Number(nota4)) / 4;
-
     //Tratamentos
     //validação de entrada vazia
     if (nota1 == '' || nota2 == '' || nota3 == '' || nota4 == '') {
@@ -29,27 +27,23 @@ const getCalcularMedia = function (nota1, nota2, nota3, nota4) {
 
         //lógica da media
     } else {
-        if (media <= 50) {
-            return media;
-        } else if (media >= 50 && media <= 69) {
-            getExame()
-            return media;
-        } else if (media >= 70) {
-            return media;
-        }
+
+        let media = (Number(nota1) + Number(nota2) + Number(nota3) + Number(nota4)) / 4;
+
+        return media;
+
     }
 
 }
 
-
 const getExame = function (mediaAluno, notaExame) {
 
-    let exame = (Number(mediaAluno) + Number(notaExame)) / 2;
+    let exame = (Number(mediaAluno) + Number(notaExame)) / 2; 
 
     if (exame == '') {
         console.log('ERRO: entrada está vazia');
-    } else if (isNaN(exame)) {
-        console.log('ERRO: Digite número válido e não letras');
+    } else if (isNaN(notaExame)) {
+        console.log('ERRO: Digite número válido e não letrasssssss');
     } else if (exame > 100) {
         console.log('ERRO: A nota não pode ser maior que 100');
     } else if (exame < 0) {
@@ -64,16 +58,11 @@ const getExame = function (mediaAluno, notaExame) {
 
 const sexAl = function (sexoAluno) {
 
-    if (sexoAluno == '') {
-
+    if (sexoAluno == 'f' || sexoAluno == 'F') {
+        return 'A Aluna'
     } else {
-        if (sexoAluno == 'f' || sexoAluno == 'F' ) {
-            return 'A Aluna'
-        } else {
-            return 'O Aluno'
-        }
+        return 'O Aluno'
     }
-
 
 }
 
@@ -93,6 +82,3 @@ module.exports = {
     sexAl,
     sexProf
 };
-
-
-
