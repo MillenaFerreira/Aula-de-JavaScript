@@ -22494,7 +22494,7 @@ var estadosCidades = {
     ]
 };
 
-//Data: 03/03/22
+//Data: 03/03/23
 //Criar uma função (getListaDeEstados) que retorna a lista de todos os estados do Brasil. 
 const getListaDeEstados = function(){
    // Criando um json
@@ -22511,18 +22511,101 @@ const getListaDeEstados = function(){
       //Adicionar o item dentro da array
       listUfArray.push(ufEstado.sigla)
 
-      //colocando a quantidade de itens que tem na array
+      //colocando a quantidade de itens que tem dentro da array
       listUfJSON.quantidade = listUfArray.length;
    });
    //retornando a função
    return listUfJSON
 // console.log(listUfJSON);
-// console.log('quantidade: ' + listUfArray.length);
+}
+//colocando o console log para ver se o retorno está certo
+//console.log(getListaDeEstados());
+
+
+
+//Data: 04/03/23
+//Criar uma função (getDadosEstado) que retorna as informações referente
+//a um estado do Brasil, onde a sigla do estado será o critério de filtro. 
+const DadosEstado = function(sigla) {
+
+   let uf = sigla;
+
+   //Criando um json
+   let listDados = {};
+
+   
+   //for each que vai olhar os itens
+   estadosCidades.estados.forEach(function(dados){
+
+      //verifica a se a sigla está em 
+      if(uf === dados.sigla){
+         listDados.uf = dados.sigla
+         listDados.descricao = dados.nome
+         listDados.capital = dados.capital
+         listDados.regiao = dados.regiao
+      }else{
+         return false;
+      }
+      
+   });
+return listDados;
+}
+//console.log(DadosEstado('AM'));
+
+
+
+//Data: 05/03/23
+//Criar uma função (getCapitalEstado) que retorna as informações referente
+//a capital de um estado do Brasil, onde a sigla do estado será o critério de
+//filtro. 
+
+const getCapitalEstado = function(sigla){
+   let uf = sigla;
+
+   //Criando um json
+   let listDados = {};
+
+   
+   //for each que vai olhar os itens
+   estadosCidades.estados.forEach(function(dados){
+
+      //verifica a se a sigla está em 
+      if(uf === dados.sigla){
+         listDados.uf = dados.sigla
+         listDados.descricao = dados.nome
+         listDados.capital = dados.capital
+      }else{
+         return false;
+      }
+      
+   });
+return listDados;
+}
+//console.log(getCapitalEstado('AC'));
+
+
+
+//Criar uma função (getEstadosRegiao) que retorna as informações
+//referente aos estados do Brasil conforme a sua região, onde a região será o
+//critério de filtro. 
+
+const getEstadosRegiao = function(regiao){
+   
+   let regioes = regiao;
+
+   // Criando um json
+   let listRegiaoJSON = {};
+
+   // Criando o array
+   let listRegiaoArray = [];
+
+   //Adicionando o array de Uf dentro de um JSON
+   listRegiaoJSON.regiao = listRegiaoArray;
+
+
 }
 
-//colocando o console log para ver se o retorno está certo
-console.log(getListaDeEstados());
-
+getCapitalEstado('SUL');
 module.exports = {
    estadosCidades
 };
