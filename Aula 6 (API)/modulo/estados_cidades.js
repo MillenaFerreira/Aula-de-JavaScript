@@ -22703,5 +22703,11 @@ const getCidades = function(sigla){
 //console.log(getCidades('SP'));
 
 module.exports = {
-   estadosCidades
+   estadosCidades,
+   getListaDeEstados,
+   getDadosEstado,
+   getCapitalEstado,
+   getEstadosRegiao,
+   getCapitalPais,
+   getCidades
 };
