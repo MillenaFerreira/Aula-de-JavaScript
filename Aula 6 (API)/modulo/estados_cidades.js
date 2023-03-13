@@ -22531,11 +22531,12 @@ const getListaDeEstados = function () {
 //a um estado do Brasil, onde a sigla do estado será o critério de filtro. 
 const getDadosEstado = function (sigla) {
 
-   let uf = sigla;
+   let uf = sigla.toUpperCase();
 
    //Criando um json
    let listDados = {};
 
+   let status = false;
 
    //for each que vai olhar os itens
    estadosCidades.estados.forEach(function (dados) {
@@ -22546,12 +22547,17 @@ const getDadosEstado = function (sigla) {
          listDados.descricao = dados.nome
          listDados.capital = dados.capital
          listDados.regiao = dados.regiao
-      } else {
-         return false;
+
+         status = true;
       }
 
    });
-   return listDados;
+   if (status == true) {
+      return listDados;
+   } else {
+      return false;
+   }
+
 }
 //console.log(getDadosEstado('AM'));
 
@@ -22563,11 +22569,12 @@ const getDadosEstado = function (sigla) {
 //filtro. 
 
 const getCapitalEstado = function (sigla) {
-   let uf = sigla;
+   let uf = sigla.toUpperCase();
 
    //Criando um json
    let listDados = {};
 
+   let status = false;
 
    //for each que vai olhar os itens
    estadosCidades.estados.forEach(function (dados) {
@@ -22577,12 +22584,16 @@ const getCapitalEstado = function (sigla) {
          listDados.uf = dados.sigla
          listDados.descricao = dados.nome
          listDados.capital = dados.capital
-      } else {
-         return false;
+
+         status = true;
       }
 
    });
-   return listDados;
+   if (status == true) {
+      return listDados;
+   } else {
+      return false;
+   }
 }
 //console.log(getCapitalEstado('AC'));
 
@@ -22602,11 +22613,7 @@ const getEstadosRegiao = function (regiao) {
    //criando a array
    let listRegiaoArray = [];
 
-   //Adionando no JSON a regiao que for selecionada
-   listRegiaoJSON.regiao = regioes
-
-   //Adionando no JSON(listRegiaoJSON) o Array(listRegiaoArray)
-   listRegiaoJSON.estados = listRegiaoArray
+   let status = false;
 
    //for each que vai olhar os itens
    estadosCidades.estados.forEach(function (dados) {
@@ -22622,12 +22629,22 @@ const getEstadosRegiao = function (regiao) {
 
          listRegiaoArray.push(listDados);
 
-      } else {
-         return false;
+         status = true;
+
       }
 
    });
-   return listRegiaoJSON;
+   if (status === true) {
+      //Adionando no JSON a regiao que for selecionada
+      listRegiaoJSON.regiao = regioes
+
+      //Adionando no JSON(listRegiaoJSON) o Array(listRegiaoArray)
+      listRegiaoJSON.estados = listRegiaoArray
+
+      return listRegiaoJSON;
+   }else{
+      return status;
+   }
 }
 //console.log(getEstadosRegiao('Sul'));
 
@@ -22660,7 +22677,7 @@ const getCapitalPais = function () {
          listCapitaisArray.push(listDadosCapitais)
 
       }
-      
+
 
    });
    return listCapitaisJSON;
@@ -22670,7 +22687,7 @@ const getCapitalPais = function () {
 
 //Criar uma função (getCidades) que retorna uma lista de cidades, filtrado 
 //pela sigla do estado.
-const getCidades = function(sigla){
+const getCidades = function (sigla) {
 
    let uf = sigla
 
@@ -22689,10 +22706,10 @@ const getCidades = function(sigla){
          listCidadesJSON.quantidade_cidades = dados.cidades.length
          listCidadesJSON.cidades = listCidadesArray
 
-         dados.cidades.forEach (function(cidadesDados){
+         dados.cidades.forEach(function (cidadesDados) {
             listCidadesArray.push(cidadesDados.nome)
          })
-         
+
       } else {
          return false;
       }
