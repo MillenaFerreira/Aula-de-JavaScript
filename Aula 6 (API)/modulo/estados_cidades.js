@@ -22619,7 +22619,7 @@ const getEstadosRegiao = function (regiao) {
    estadosCidades.estados.forEach(function (dados) {
 
       //verifica a se a regiao está correta 
-      if (regioes === dados.regiao) {
+      if (regioes.toUpperCase() === dados.regiao.toUpperCase()) {
 
          let listDados = {};
 
@@ -22689,11 +22689,13 @@ const getCapitalPais = function () {
 //pela sigla do estado.
 const getCidades = function (sigla) {
 
-   let uf = sigla
+   let uf = sigla.toUpperCase();
 
    let listCidadesJSON = {};
 
    let listCidadesArray = [];
+
+   let status = false;
 
 
    //for each que vai olhar os itens
@@ -22708,14 +22710,17 @@ const getCidades = function (sigla) {
 
          dados.cidades.forEach(function (cidadesDados) {
             listCidadesArray.push(cidadesDados.nome)
-         })
 
-      } else {
-         return false;
-      }
-
+            status = true;
+         }) 
+      } 
    });
-   return listCidadesJSON;
+   if(status == true) {
+      listCidadesJSON.cidades = listCidadesArray
+      return listCidadesJSON
+   }else{
+      return false;
+   }
 }
 //console.log(getCidades('SP'));
 

@@ -83,7 +83,7 @@ app.get('/estados', cors(), async function(request, response, next) {
 });
 
 //EndPoints para listar os dados do estado filtrando pela sigla do estado da minha API
-app.get('/estado/:uf', cors(), async function(request, response, next) {
+app.get('/estado/sigla/:uf', cors(), async function(request, response, next) {
 
     let statusCode;
     let dadosEstados = {};
@@ -121,7 +121,7 @@ app.get('/estado/:uf', cors(), async function(request, response, next) {
 });
 
 //EndPoints para listar os dados da capital de um estado do Brasil
-app.get('/estadocapital/:uf', cors(), async function(request, response, next) {
+app.get('/estadocapital/sigla/:uf', cors(), async function(request, response, next) {
 
     let statusCode;
     let dadosCapitalEstado = {};
@@ -151,7 +151,7 @@ app.get('/estadocapital/:uf', cors(), async function(request, response, next) {
 });
 
 //EndPoints para listar os estados de acordo com a região
-app.get('/regiaoestados/:regiao', cors(), async function(request, response, next) {
+app.get('/regiaoestados/regiao/:regiao', cors(), async function(request, response, next) {
 
     let statusCode;
     let dadosRegiaoEstado = {};
@@ -200,12 +200,81 @@ app.get('/capital/', cors(), async function(request, response, next){
 });
 
 //EndPoints para listar as cidades de acordo com a sigla do estado(fazer)
+app.get('/v1/cidades/estado/sigla/:uf', cors(), async function(request, response, next) {
+    let statusCode
+    let cidades = {};
 
+    let siglaEstado = request.params.uf
+
+    if(siglaEstado == '' || siglaEstado == undefined || !isNaN(siglaEstado)){
+        statusCode = 400;
+        cidades.message = 'Não foi possivel processar, pois os dados de entrada (uf) que foi enviado não corrensponde ao que foi exigido. Confira o valor, pois não pode ser vazio, precisa ser caracteres e ter 2 dígitos.';
+    } else {
+        //Chama a função para retornar os dados do estado
+        let cidadesEstado = estadosCidades.getCidades(siglaEstado)
+
+        if(cidadesEstado){
+            statusCode = 200
+            cidades = cidadesEstado
+        } else {
+            statusCode = 404
+        }
+    }
+    //Retorna o codigo e o JSON
+    response.status(statusCode)
+    response.json(cidades)
+});
+
+//Versão do professor
+app.get('/v2/cidades', cors(), async function(request, response, next) {
+    
+    /**
+     *          Existem 2 opções para receber variaveis para filtro
+     * 
+     *  params - permite receber a variavel na estrutura da URL
+     *          criada no endPoint(geralmente utilizaco para ID (PK [chave primaria]))
+     * 
+     *  query - também conhecido como queryString permite receber uma ou muitas variaveis
+     *          para realizar filtros mais avançados
+     */
+
+    let statusCode
+    let dadosCidades = {};
+
+    let siglaEstado = request.query.uf
+
+    if(siglaEstado == '' || siglaEstado == undefined || !isNaN(siglaEstado)){
+        statusCode = 400;
+        dadosCidades.message = 'Não foi possivel processar, pois os dados de entrada (uf) que foi enviado não corrensponde ao que foi exigido. Confira o valor, pois não pode ser vazio, precisa ser caracteres e ter 2 dígitos.';
+    } else {
+        //Chama a função para retornar os dados do estado
+        let cidadesEstado = estadosCidades.getCidades(siglaEstado);
+
+        if(cidadesEstado){
+            statusCode = 200
+            dadosCidades = cidadesEstado;
+        } else {
+            statusCode = 404
+        }
+    }
+    //Retorna o codigo e o JSON
+    response.status(statusCode)
+    response.json(dadosCidades)
+
+});
 
 //Roda o serviço da API para ficar aguardando requisições
 app.listen(8080, function(){
     console.log('Servidor aguardando requisições na porta 8080.');
 });
 
+// 1º mostra qual é a versão
+// 2º barra(/) = projeto ou nome da empresa ex: /senai/estados
+// 3 º tipo de retorno
+// 4, 5, 6, 7 ... º tipo de filtragem que o usuario irá digitar ex: /senai/cidades/sigla/:uf
+//End poitns tem que fazer sentido e tem que ser padronizado, vercionar
 
-
+//outro exemplo para caso tenha mais de uma variavel
+//          explicação do paramentro
+//                   ↧
+// cidades/estados/sigla/SP(que é a uf)/populacao/20000(quantidade)
