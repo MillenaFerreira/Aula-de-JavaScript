@@ -5,7 +5,7 @@ var estadosCidades = {
       [
          {
             sigla: 'SP',
-            nome: 'Sao Paulo',
+            nome: 'São Paulo',
             capital: 'São Paulo',
             regiao: 'Sudeste',
             cidades: [
@@ -20219,7 +20219,7 @@ var estadosCidades = {
          },
          {
             sigla: 'MS',
-            nome: 'Mato Grosso do Sula',
+            nome: 'Mato Grosso do Sul',
             capital: 'Campo Grande',
             regiao: 'Centro-Oeste',
             cidades: [
