@@ -5,9 +5,38 @@
  * Versão: 1.0
  **************************************************************/
 
-//Inserir um novo aluno
-const inserirAluno = function(dadosAluno){
+//Import do arquivo de configurações das variaveis, constantes e funções globais
+var message = require('./modulo/config.js')
 
+//Import do arquivo DAO para acessar dados do aluno o BD
+var alunoDAO = require('../model/DAO/alunoDAO');
+
+//Inserir um novo aluno
+const inserirAluno = async function(dadosAluno){
+
+    let resultDadosAluno;
+
+    if (
+        dadosAluno.nome == undefined            || dadosAluno.nome == ''            || dadosAluno.nome.length > 100             ||
+        dadosAluno.rg == undefined              || dadosAluno.rg == ''              || dadosAluno.rg.length > 15                ||
+        dadosAluno.cpf == undefined             || dadosAluno.cpf == ''             || dadosAluno.cpf.length > 20               ||
+        dadosAluno.data_nascimento == undefined || dadosAluno.data_nascimento == '' || dadosAluno.data_nascimento.length > 10   ||
+        dadosAluno.email == undefined           || dadosAluno.email == ''           || dadosAluno.email.length > 200
+    ) {
+        return message.ERROR_REQUIRED_FIELDS; //Status code 400
+    }else{
+        //Envia os dados para a model inserir no Banco de Dados
+        resultDadosAluno = await alunoDAO.insertAluno(dadosAluno);
+
+        //valida se o BD inseriu corretamente os dados
+        if (resultDadosAluno) {
+            return message.SUCCESS_CREATED_ITEM; //Status code 201
+        }else{
+            return message.ERROR_INTERNAL_SERVER //Status code 500
+        }
+
+
+    }
 
 }
 
@@ -29,9 +58,6 @@ const deletarAluno = function(id){
 const getAlunos = async function(){
 
     let dadosAlunoJSON = {};
-
-    //Import do arquivo DAO para acessar dados do aluno o BD
-    let alunoDAO = require('../model/DAO/alunoDAO');
 
     //chama a função do arquivo DAO que irá retornar todos os registros do BD
     let dadosAluno = await alunoDAO.selectAllAlunos();
@@ -55,9 +81,7 @@ const getBuscarAlunoID = async function(id){
 
     let dadosAlunoJSONId = {};
 
-    let alunoDAOId = require('../model/DAO/alunoDAO')
-
-    let dadosAlunoId = await alunoDAOId.selectByIdAluno(idAluno);
+    let dadosAlunoId = await alunoDAO.selectByIdAluno(idAluno);
 
     if (dadosAlunoId) {
         //criando um json com o atributo alunos. para emcaminhar um array de alunos
@@ -75,16 +99,14 @@ const getBuscarAlunoNome = async function(name){
 
     let nomeAluno = name
 
-    let dadosAlunoJSONId = {};
+    let dadosAlunoJSONNome = {};
 
-    let alunoDAOId = require('../model/DAO/alunoDAO')
+    let dadosAlunoNome = await alunoDAO.selectByNameAluno(nomeAluno);
 
-    let dadosAlunoId = await alunoDAOId.selectByIdAluno(nomeAluno);
-
-    if (dadosAlunoId) {
+    if (dadosAlunoNome) {
         //criando um json com o atributo alunos. para emcaminhar um array de alunos
-        dadosAlunoJSONId.alunos = dadosAlunoId;
-        return dadosAlunoJSONId;
+        dadosAlunoJSONNome.alunos = dadosAlunoNome;
+        return dadosAlunoJSONNome;
     }else{
         return false;
     }
@@ -95,5 +117,6 @@ const getBuscarAlunoNome = async function(name){
 module.exports = {
     getAlunos,
     getBuscarAlunoID,
-    getBuscarAlunoNome
+    getBuscarAlunoNome,
+    inserirAluno
 }

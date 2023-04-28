@@ -13,7 +13,31 @@ var prisma = new PrismaClient();
 
 
 //Inserir dados do aluno no BD
-const insert = function(dadosAluno){
+const insertAluno = async function(dadosAluno){
+
+    //script sql para inserir dados
+    let sql = `insert into tbl_aluno (
+                    nome,
+                    rg,
+                    cpf,
+                    data_nascimento,
+                    email
+                    )values(
+                        '${dadosAluno.nome}',
+                        '${dadosAluno.rg}',
+                        '${dadosAluno.cpf}',
+                        '${dadosAluno.data_nascimento}',
+                        '${dadosAluno.email}'
+                    )`;
+
+    //executa o script no BD
+    let resultStatus = await prisma.$executeRawUnsafe(sql);
+
+    if (resultStatus) {
+        return true;
+    }else{
+        return false;
+    }
 
 }
 
@@ -70,18 +94,18 @@ const selectByIdAluno = async function(id){
 
 }
 
-//Retorna o aluno pelo ID no nome
+//Retorna o aluno nome do aluno
 const selectByNameAluno = async function(name){
 
     let nomeAluno = name
 
-    let sql = `select * from tbl_aluno where id like %${nomeAluno}%`
+    let sql = `select * from tbl_aluno where nome like '%${nomeAluno}%'`
 
-    let rsAlunoId = await prisma.$queryRawUnsafe(sql);
+    let rsAlunoNome = await prisma.$queryRawUnsafe(sql);
 
     //valida se o banco de dados retornou algum registro
-    if (rsAlunoId.length > 0) {
-        return rsAlunoId;
+    if (rsAlunoNome.length > 0) {
+        return rsAlunoNome;
     }else{
         return false;
     }
@@ -93,5 +117,6 @@ const selectByNameAluno = async function(name){
 module.exports = {
     selectAllAlunos,
     selectByIdAluno,
-    selectByNameAluno
+    selectByNameAluno,
+    insertAluno
 }

@@ -48,13 +48,14 @@ app.use((request, response, next) => {
  */
 
 
+ //define que os dados que irão chegar no body da requisição será no padrão JSON (isso só é utilizado no post e no delete)
+ const bodyParserJSON = bodyParser.json();
 
+ //Import do arquivo da controller que irá solicitar a model os dados do BD
+ var controllerAluno = require('./controller/controller_aluno')
 
 //end-points : retorna todos os dados de aluno
 app.get('/v1/lion-school/aluno', cors(), async function (request, response) {
-
-    //Import do arquivo da controller que irá solicitar a model os dados do BD
-    let controllerAluno = require('./controller/controller_aluno')
 
     //recebe os dados da controller do aluno
     let dadosAluno = await controllerAluno.getAlunos();
@@ -71,12 +72,9 @@ app.get('/v1/lion-school/aluno', cors(), async function (request, response) {
 })
 
 //end-points : retorna o aluno filtrando pelo ID
-app.get('/v1/lion-school/aluno/:id', cors(), async function (request, response) {
+app.get('/v1/lion-school/aluno/id/:id', cors(), async function (request, response) {
 
     let idAluno = request.params.id
-
-    //Import do arquivo da controller que irá solicitar a model os dados do BD
-    let controllerAluno = require('./controller/controller_aluno')
 
     //recebe os dados da controller do aluno
     let dadosAluno = await controllerAluno.getBuscarAlunoID(idAluno);
@@ -93,15 +91,13 @@ app.get('/v1/lion-school/aluno/:id', cors(), async function (request, response) 
 })
 
 //end-points : retorna o aluno filtrando pelo nome
-app.get('/v1/lion-school/aluno/:nome', cors(), async function (request, response) {
+app.get('/v1/lion-school/aluno/nome/:nome', cors(), async function (request, response) {
 
     let nomeAluno = request.params.nome
 
-    //Import do arquivo da controller que irá solicitar a model os dados do BD
-    let controllerAluno = require('./controller/controller_aluno')
-
     //recebe os dados da controller do aluno
-    let dadosAluno = await controllerAluno.getBuscarAlunoID(nomeAluno);
+    let dadosAluno = await controllerAluno.getBuscarAlunoNome(nomeAluno);
+
 
     //valida se existe registro de aluno
     if (dadosAluno) {
@@ -117,8 +113,15 @@ app.get('/v1/lion-school/aluno/:nome', cors(), async function (request, response
 
 
 //end-points : insere um aluno novo 
-app.post('/v1/lion-school/aluno', cors(), async function (request, response) {
+app.post('/v1/lion-school/aluno', cors(), bodyParserJSON, async function (request, response) {
 
+    //recebe os dados encaminhados pela requisição 
+    let dadosBody = request.body;
+
+    let resultDadosAluno = await controllerAluno.inserirAluno(dadosBody);
+
+    response.status(resultDadosAluno.status);
+    response.json(resultDadosAluno);
 
 
 })
