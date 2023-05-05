@@ -48,11 +48,12 @@ app.use((request, response, next) => {
  */
 
 
- //define que os dados que irão chegar no body da requisição será no padrão JSON (isso só é utilizado no post e no delete)
- const bodyParserJSON = bodyParser.json();
+//define que os dados que irão chegar no body da requisição será no padrão JSON (isso só é utilizado no post e no delete)
+const bodyParserJSON = bodyParser.json();
 
- //Import do arquivo da controller que irá solicitar a model os dados do BD
- var controllerAluno = require('./controller/controller_aluno')
+//Import do arquivo da controller que irá solicitar a model os dados do BD
+var controllerAluno = require('./controller/controller_aluno')
+var message = require('./controller/modulo/config.js');
 
 //end-points : retorna todos os dados de aluno
 app.get('/v1/lion-school/aluno', cors(), async function (request, response) {
@@ -115,19 +116,50 @@ app.get('/v1/lion-school/aluno/nome/:nome', cors(), async function (request, res
 //end-points : insere um aluno novo 
 app.post('/v1/lion-school/aluno', cors(), bodyParserJSON, async function (request, response) {
 
-    //recebe os dados encaminhados pela requisição 
-    let dadosBody = request.body;
+    //Recebe o content-type da requisição
+    let contentType = request.headers['content-type'];
 
-    let resultDadosAluno = await controllerAluno.inserirAluno(dadosBody);
+    //Validação para receber dados apenas no formato JSON
+    if (String(contentType).toLowerCase() === 'application/json') {
+        //recebe os dados encaminhados pela requisição 
+        let dadosBody = request.body;
 
-    response.status(resultDadosAluno.status);
-    response.json(resultDadosAluno);
+        let resultDadosAluno = await controllerAluno.inserirAluno(dadosBody);
+
+        response.status(resultDadosAluno.status);
+        response.json(resultDadosAluno);
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status);
+        response.json(message.ERROR_INVALID_CONTENT_TYPE)
+    }
+
+
 
 
 })
 
 //end-points : atualiza um aluno existente, filtrando pelo ID
-app.put('/v1/lion-school/aluno/:id', cors(), async function (request, response) {
+app.put('/v1/lion-school/aluno/:id', cors(), bodyParserJSON, async function (request, response) {
+
+    //Recebe o content-type da requisição
+    let contentType = request.headers['content-type'];
+
+    //Validação para receber dados apenas no formato JSON
+    if (String(contentType).toLowerCase() === 'application/json') {
+        //Recebe o ID do aluno pelo parametro
+        let idAluno = request.params.id;
+        //Recebe os dados dos alunos encaminhado no corpo da requisição
+        let dadosBody = request.body;
+
+        let resultDadosAluno = await controllerAluno.atualizarAluno(dadosBody, idAluno);
+
+        response.status(resultDadosAluno.status);
+        response.json(resultDadosAluno);
+    } else {
+        response.status(message.ERROR_INVALID_CONTENT_TYPE.status);
+        response.json(message.ERROR_INVALID_CONTENT_TYPE)
+    }
+
 
 
 
@@ -136,6 +168,24 @@ app.put('/v1/lion-school/aluno/:id', cors(), async function (request, response) 
 //end-points : exclui um aluno, filtrando pelo ID
 app.delete('/v1/lion-school/aluno/:id', cors(), async function (request, response) {
 
+
+    //Recebe o ID do aluno pelo parametro
+    let idAluno = request.params.id;
+    
+
+    //trazer a controller select do aluno pelo Id
+    let resultDadosAlunoID = await controllerAluno.getBuscarAlunoID(idAluno)
+    
+
+    let resultDadosAluno = await controllerAluno.deletarAluno(idAluno)
+
+    if (resultDadosAluno) {
+        response.status(resultDadosAluno.status);
+        response.json(resultDadosAluno);
+    } else {
+        response.status(message.ERROR_INVALID_ID.status);
+        response.json(message.ERROR_INVALID_ID)
+    }
 
 
 })

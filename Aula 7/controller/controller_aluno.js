@@ -12,26 +12,27 @@ var message = require('./modulo/config.js')
 var alunoDAO = require('../model/DAO/alunoDAO');
 
 //Inserir um novo aluno
-const inserirAluno = async function(dadosAluno){
+const inserirAluno = async function (dadosAluno) {
 
     let resultDadosAluno;
 
+    //Validação para tratar campos obrigatórios e quantidade de caracteres
     if (
-        dadosAluno.nome == undefined            || dadosAluno.nome == ''            || dadosAluno.nome.length > 100             ||
-        dadosAluno.rg == undefined              || dadosAluno.rg == ''              || dadosAluno.rg.length > 15                ||
-        dadosAluno.cpf == undefined             || dadosAluno.cpf == ''             || dadosAluno.cpf.length > 20               ||
-        dadosAluno.data_nascimento == undefined || dadosAluno.data_nascimento == '' || dadosAluno.data_nascimento.length > 10   ||
-        dadosAluno.email == undefined           || dadosAluno.email == ''           || dadosAluno.email.length > 200
+        dadosAluno.nome == undefined || dadosAluno.nome == '' || dadosAluno.nome.length > 100 ||
+        dadosAluno.rg == undefined || dadosAluno.rg == '' || dadosAluno.rg.length > 15 ||
+        dadosAluno.cpf == undefined || dadosAluno.cpf == '' || dadosAluno.cpf.length > 20 ||
+        dadosAluno.data_nascimento == undefined || dadosAluno.data_nascimento == '' || dadosAluno.data_nascimento.length > 10 ||
+        dadosAluno.email == undefined || dadosAluno.email == '' || dadosAluno.email.length > 200
     ) {
         return message.ERROR_REQUIRED_FIELDS; //Status code 400
-    }else{
+    } else {
         //Envia os dados para a model inserir no Banco de Dados
         resultDadosAluno = await alunoDAO.insertAluno(dadosAluno);
 
         //valida se o BD inseriu corretamente os dados
         if (resultDadosAluno) {
             return message.SUCCESS_CREATED_ITEM; //Status code 201
-        }else{
+        } else {
             return message.ERROR_INTERNAL_SERVER //Status code 500
         }
 
@@ -41,21 +42,60 @@ const inserirAluno = async function(dadosAluno){
 }
 
 //Atualizar um aluno existente
-const atualizarAluno = function(dadosAluno){
+const atualizarAluno = async function (dadosAluno, idAluno) {
+
+    //Validação para tratar campos obrigatórios e quantidade de caracteres
+    if (
+        dadosAluno.nome == undefined || dadosAluno.nome == '' || dadosAluno.nome.length > 100 ||
+        dadosAluno.rg == undefined || dadosAluno.rg == '' || dadosAluno.rg.length > 15 ||
+        dadosAluno.cpf == undefined || dadosAluno.cpf == '' || dadosAluno.cpf.length > 20 ||
+        dadosAluno.data_nascimento == undefined || dadosAluno.data_nascimento == '' || dadosAluno.data_nascimento.length > 10 ||
+        dadosAluno.email == undefined || dadosAluno.email == '' || dadosAluno.email.length > 200
+    ) {
+        return message.ERROR_REQUIRED_FIELDS; //Status code 400
+        // Validação de ID incorreto ou não informado   
+    } else if (idAluno == '' || idAluno == undefined || isNaN(idAluno)) {
+        return message.ERROR_INVALID_ID; //Status code 400
+    } else {
+        //adiciona o ID do aluno no JSON dos dados
+        dadosAluno.id = idAluno;
+
+        //encaminha os dados para a model do aluno
+        let resultDadosAluno = await alunoDAO.updateAluno(dadosAluno);
+
+        if (resultDadosAluno) {
+            return message.SUCCESS_UPDATE_ITEM //Status code 200
+        } else {
+            return message.ERROR_INTERNAL_SERVER // Status code 500
+        }
+    }
 
 
 }
 
 
 //Deletar um aluno existente
-const deletarAluno = function(id){
+const deletarAluno = async function (id) {
 
+    if (id == '' || id == undefined || isNaN(id)) {
+        return message.ERROR_INVALID_ID; //Status code 400
+    }else{
+        let resultDadosAluno = await alunoDAO.deleteAluno(id)
+
+        if (resultDadosAluno){
+            return message.SUCCESS_DELETE_ITEM //Status code 200
+        }else{
+            return message.ERROR_INTERNAL_SERVER // Status code 500
+        }
+    }
+
+    
 
 }
 
 
 //Retorna a lista de todos os alunos
-const getAlunos = async function(){
+const getAlunos = async function () {
 
     let dadosAlunoJSON = {};
 
@@ -67,7 +107,7 @@ const getAlunos = async function(){
         dadosAlunoJSON.quantidade = dadosAluno.length;
         dadosAlunoJSON.alunos = dadosAluno;
         return dadosAlunoJSON;
-    }else{
+    } else {
         return false;
     }
 
@@ -75,7 +115,12 @@ const getAlunos = async function(){
 }
 
 //Retorna o aluno pelo ID
-const getBuscarAlunoID = async function(id){
+const getBuscarAlunoID = async function (id) {
+
+    //verificar se o aluno existe
+    //404 -- já manda direto para o usuario que o id já foi deletado
+    //200 -- verificar o aluno existente no banco 
+
 
     let idAluno = id
 
@@ -83,11 +128,19 @@ const getBuscarAlunoID = async function(id){
 
     let dadosAlunoId = await alunoDAO.selectByIdAluno(idAluno);
 
+    let dadosAlunoDeleteID = await alunoDAO.deleteAluno(idAluno)
+
+    if (dadosAlunoId == 404) {
+        return message.ERROR_DELETE
+    } else {
+        //verificar se o aluno existe no banco 
+        
+    }
     if (dadosAlunoId) {
         //criando um json com o atributo alunos. para emcaminhar um array de alunos
         dadosAlunoJSONId.alunos = dadosAlunoId;
         return dadosAlunoJSONId;
-    }else{
+    } else {
         return false;
     }
 
@@ -95,7 +148,7 @@ const getBuscarAlunoID = async function(id){
 }
 
 //Retorna o aluno pelo nome
-const getBuscarAlunoNome = async function(name){
+const getBuscarAlunoNome = async function (name) {
 
     let nomeAluno = name
 
@@ -107,7 +160,7 @@ const getBuscarAlunoNome = async function(name){
         //criando um json com o atributo alunos. para emcaminhar um array de alunos
         dadosAlunoJSONNome.alunos = dadosAlunoNome;
         return dadosAlunoJSONNome;
-    }else{
+    } else {
         return false;
     }
 
@@ -118,5 +171,7 @@ module.exports = {
     getAlunos,
     getBuscarAlunoID,
     getBuscarAlunoNome,
-    inserirAluno
+    inserirAluno,
+    atualizarAluno,
+    deletarAluno
 }
