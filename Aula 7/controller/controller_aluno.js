@@ -31,7 +31,18 @@ const inserirAluno = async function (dadosAluno) {
 
         //valida se o BD inseriu corretamente os dados
         if (resultDadosAluno) {
-            return message.SUCCESS_CREATED_ITEM; //Status code 201
+
+            //Chama a função que vai encontrar o ID gerado após o insert
+            let novoAluno = await alunoDAO.selectLastId();
+
+            let dadosAlunoJSON = {};
+
+            dadosAlunoJSON.status = message.SUCCESS_CREATED_ITEM.status //Status code 201
+            dadosAlunoJSON.message = message.SUCCESS_CREATED_ITEM.message
+            dadosAlunoJSON.aluno = novoAluno;
+
+
+            return dadosAlunoJSON
         } else {
             return message.ERROR_INTERNAL_SERVER //Status code 500
         }
@@ -60,14 +71,29 @@ const atualizarAluno = async function (dadosAluno, idAluno) {
         //adiciona o ID do aluno no JSON dos dados
         dadosAluno.id = idAluno;
 
-        //encaminha os dados para a model do aluno
-        let resultDadosAluno = await alunoDAO.updateAluno(dadosAluno);
+        let statusId = await alunoDAO.selectByIdAluno(idAluno);
 
-        if (resultDadosAluno) {
-            return message.SUCCESS_UPDATE_ITEM //Status code 200
+        if (statusId) {
+
+            //encaminha os dados para a model do aluno
+            let resultDadosAluno = await alunoDAO.updateAluno(dadosAluno);
+
+            if (resultDadosAluno) {
+
+                let dadosAlunoJSON = {};
+
+                dadosAlunoJSON.status = message.SUCCESS_UPDATE_ITEM.status //Status code 201
+                dadosAlunoJSON.message = message.SUCCESS_UPDATE_ITEM.message
+                dadosAlunoJSON.aluno = dadosAluno;
+
+                return dadosAlunoJSON
+            } else {
+                return message.ERROR_INTERNAL_SERVER // Status code 500
+            }
         } else {
-            return message.ERROR_INTERNAL_SERVER // Status code 500
+            return message.ERROR_NOT_FOUND // Status code 404
         }
+
     }
 
 
@@ -77,19 +103,28 @@ const atualizarAluno = async function (dadosAluno, idAluno) {
 //Deletar um aluno existente
 const deletarAluno = async function (id) {
 
-    if (id == '' || id == undefined || isNaN(id)) {
-        return message.ERROR_INVALID_ID; //Status code 400
-    }else{
-        let resultDadosAluno = await alunoDAO.deleteAluno(id)
+    let statusId = await alunoDAO.selectByIdAluno(id);
 
-        if (resultDadosAluno){
-            return message.SUCCESS_DELETE_ITEM //Status code 200
-        }else{
-            return message.ERROR_INTERNAL_SERVER // Status code 500
+
+    if (statusId) {
+        if (id == '' || id == undefined || isNaN(id)) {
+            return message.ERROR_INVALID_ID; //Status code 400
+        } else {
+            let resultDadosAluno = await alunoDAO.deleteAluno(id)
+
+            if (resultDadosAluno) {
+                return message.SUCCESS_DELETE_ITEM //Status code 200
+            } else {
+                return message.ERROR_INTERNAL_SERVER // Status code 500
+            }
         }
+    } else {
+        return message.ERROR_NOT_FOUND // Status code 404
     }
 
-    
+
+
+
 
 }
 
@@ -104,11 +139,13 @@ const getAlunos = async function () {
 
     if (dadosAluno) {
         //criando um json com o atributo alunos. para emcaminhar um array de alunos
+        dadosAlunoJSON.status = message.SUCCESS_REQUEST.status
+        dadosAlunoJSON.message = message.SUCCESS_REQUEST.message
         dadosAlunoJSON.quantidade = dadosAluno.length;
         dadosAlunoJSON.alunos = dadosAluno;
         return dadosAlunoJSON;
     } else {
-        return false;
+        return message.ERROR_NOT_FOUND;
     }
 
 
@@ -121,29 +158,34 @@ const getBuscarAlunoID = async function (id) {
     //404 -- já manda direto para o usuario que o id já foi deletado
     //200 -- verificar o aluno existente no banco 
 
-
     let idAluno = id
 
-    let dadosAlunoJSONId = {};
-
-    let dadosAlunoId = await alunoDAO.selectByIdAluno(idAluno);
-
-    let dadosAlunoDeleteID = await alunoDAO.deleteAluno(idAluno)
-
-    if (dadosAlunoId == 404) {
-        return message.ERROR_DELETE
+    //validação do id
+    if (idAluno == '' || idAluno == undefined || isNaN(idAluno)) {
+        return message.ERROR_INVALID_ID
     } else {
-        //verificar se o aluno existe no banco 
-        
-    }
-    if (dadosAlunoId) {
-        //criando um json com o atributo alunos. para emcaminhar um array de alunos
-        dadosAlunoJSONId.alunos = dadosAlunoId;
-        return dadosAlunoJSONId;
-    } else {
-        return false;
-    }
+        let dadosAlunoJSONId = {};
 
+        let dadosAlunoId = await alunoDAO.selectByIdAluno(idAluno);
+
+        // let dadosAlunoDeleteID = await alunoDAO.deleteAluno(idAluno)
+
+        // if (dadosAlunoId == 404) {
+        //     return message.ERROR_DELETE
+        // } else {
+        //     //verificar se o aluno existe no banco 
+
+        // }
+        if (dadosAlunoId) {
+            //criando um json com o atributo alunos. para emcaminhar um array de alunos
+            dadosAlunoJSONId.status = message.SUCCESS_REQUEST.status
+            dadosAlunoJSONId.message = message.SUCCESS_REQUEST.message
+            dadosAlunoJSONId.alunos = dadosAlunoId;
+            return dadosAlunoJSONId;
+        } else {
+            return message.ERROR_NOT_FOUND;
+        }
+    }
 
 }
 
@@ -168,10 +210,10 @@ const getBuscarAlunoNome = async function (name) {
 }
 
 module.exports = {
-    getAlunos,
-    getBuscarAlunoID,
-    getBuscarAlunoNome,
     inserirAluno,
     atualizarAluno,
-    deletarAluno
+    deletarAluno,
+    getAlunos,
+    getBuscarAlunoID,
+    getBuscarAlunoNome
 }

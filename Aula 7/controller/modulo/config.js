@@ -5,7 +5,7 @@
  * Versão: 1.0
  **************************************************************/
 
-/**** MENSAGENS DE ERRO ****/
+/******************* MENSAGENS DE ERRO ***********************/
 const ERROR_REQUIRED_FIELDS = {status: 400, message: 'Campos obrigatórios não foram preenchidos.'};
 
 const ERROR_INTERNAL_SERVER = {status: 500, message: 'Devido a um erro interno no servidor, não foi possível processar a requisição.'};
@@ -16,12 +16,16 @@ const ERROR_INVALID_CONTENT_TYPE = {status: 415, message: 'O tipo de mídia Cont
 
 const ERROR_DELETE = {status: 404, message: 'Esse ID já foi excluido'};
 
-/**** MENSAGENS DE SUCESSO ****/
+const ERROR_NOT_FOUND = {status: 404, message: 'Nenhum item encontrado na requisição'};
+
+/**************** MENSAGENS DE SUCESSO *********************/
 const SUCCESS_CREATED_ITEM = {status: 201, message: 'Item criado com sucesso'};
 
 const SUCCESS_UPDATE_ITEM = {status: 200, message: 'Item atualizado com sucesso'};
 
 const SUCCESS_DELETE_ITEM = {status: 200, message: 'Item deletado com sucesso'};
+
+const SUCCESS_REQUEST = {status: 200, message: 'Requisição bem sucedida!'};
 
 
 module.exports = {
@@ -30,7 +34,9 @@ module.exports = {
     ERROR_INVALID_ID,
     ERROR_INVALID_CONTENT_TYPE,
     ERROR_DELETE,
+    ERROR_NOT_FOUND,
     SUCCESS_CREATED_ITEM,
     SUCCESS_UPDATE_ITEM,
-    SUCCESS_DELETE_ITEM   
+    SUCCESS_DELETE_ITEM,
+    SUCCESS_REQUEST   
 }
